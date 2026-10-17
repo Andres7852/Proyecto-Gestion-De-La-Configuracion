@@ -11,17 +11,22 @@ import tarjetas from './routes/tarjetas';
 import notificaciones from './routes/notificaciones';
 import cajitas from './routes/cajitas';
 import prestamos from './routes/prestamos';
+import { setupSwagger } from './swagger';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Documentación Swagger / OpenAPI
+setupSwagger(app);
+
 app.get('/', (_req, res) => {
   res.json({
     mensaje: 'Bienvenido a Banco MVP API (Base de Datos Local)',
+    documentacion: '/api-docs',
     salud: '/health',
-    rutas: ['/health', '/auth', '/cuentas', '/transferencias', '/creditos', '/tarjetas', '/notificaciones', '/cajitas', '/prestamos'],
+    rutas: ['/api-docs', '/health', '/auth', '/cuentas', '/transferencias', '/creditos', '/tarjetas', '/notificaciones', '/cajitas', '/prestamos'],
   });
 });
 

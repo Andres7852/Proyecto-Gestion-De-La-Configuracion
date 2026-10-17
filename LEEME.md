@@ -16,6 +16,8 @@ npm run dev
 
 El backend se iniciará en `http://localhost:3000`. Al arrancar por primera vez, creará e inicializará automáticamente la base de datos local embebida (`PGlite`) ejecutando los esquemas, tablas, tipos y funciones bancarias almacenadas en `db/`.
 
+- **Documentación interactiva Swagger (OpenAPI 3.0):** Puedes consultar y probar todos los endpoints en vivo accediendo a `http://localhost:3000/api-docs` (o el JSON crudo en `http://localhost:3000/api-docs.json`).
+
 *(Opcional)* Si prefieres utilizar un servidor PostgreSQL local ya existente en tu equipo, puedes crear un archivo `.env` en `api/` definiendo `DATABASE_URL=postgresql://usuario:password@localhost:5432/nombre_bd`.
 
 ---
