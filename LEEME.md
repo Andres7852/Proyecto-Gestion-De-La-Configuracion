@@ -1,13 +1,24 @@
-# Banco MVP — Plataforma Web & API Backend (Base de Datos Local)
+# Banco MVP — Plataforma Web & API Backend (Monorepo con Submódulos)
 
 ## 🚀 Guía Rápida
+
+### Clonación del Repositorio
+Para clonar este monorepo asegurando la descarga automática de sus submódulos (`frontend` y `backend`), ejecuta:
+
+```powershell
+git clone --recurse-submodules https://github.com/Andres7852/Proyecto-Gestion-De-La-Configuracion.git
+```
+
+*(Si ya lo clonaste sin submódulos, inicialízalos con `git submodule update --init --recursive`)*.
+
+---
 
 ### Paso 1: Iniciar el Backend API (Base de Datos Local Cero-Configuración)
 
 Abre una terminal en la raíz de tu proyecto:
 
 ```powershell
-cd api
+cd backend
 npm install
 npm test
 npm run typecheck
@@ -18,7 +29,7 @@ El backend se iniciará en `http://localhost:3000`. Al arrancar por primera vez,
 
 - **Documentación interactiva Swagger (OpenAPI 3.0):** Puedes consultar y probar todos los endpoints en vivo accediendo a `http://localhost:3000/api-docs` (o el JSON crudo en `http://localhost:3000/api-docs.json`).
 
-*(Opcional)* Si prefieres utilizar un servidor PostgreSQL local ya existente en tu equipo, puedes crear un archivo `.env` en `api/` definiendo `DATABASE_URL=postgresql://usuario:password@localhost:5432/nombre_bd`.
+*(Opcional)* Si prefieres utilizar un servidor PostgreSQL local ya existente en tu equipo, puedes crear un archivo `.env` en `backend/` definiendo `DATABASE_URL=postgresql://usuario:password@localhost:5432/nombre_bd`.
 
 ---
 
@@ -27,7 +38,7 @@ El backend se iniciará en `http://localhost:3000`. Al arrancar por primera vez,
 Abre una segunda terminal:
 
 ```powershell
-cd web
+cd frontend
 npm install
 npm run typecheck
 npm run dev
@@ -37,24 +48,27 @@ La aplicación web se abrirá en `http://localhost:5173`.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Monorepo
 
 ```
-banco-mvp/
+your-project/
+├── .gitmodules            Definición de submódulos Git
 ├── db/                    Scripts SQL de estructura bancaria (Schema, Funciones, Seed)
-├── api/                   Backend Node.js + Express + TypeScript + BD Local (PGlite/PostgreSQL)
+├── backend/               [Submódulo Git] Node.js + Express + TypeScript + Swagger
 │   ├── tsconfig.json
 │   ├── src/
 │   │   ├── index.ts       Punto de entrada del servidor API e inicializador de BD
+│   │   ├── swagger.ts     Configuración OpenAPI 3.0 y Swagger UI
 │   │   ├── middleware.ts  Validación de tokens de sesión JWT
 │   │   ├── domain/        ← Lógica pura de dominio (sin BD ni HTTP)
 │   │   ├── routes/        Rutas HTTP (Express) e integración local
 │   │   └── repos/         Manejador de base de datos local (db.ts)
 │   └── tests/             Suite de 33 pruebas unitarias de dominio
-└── web/                   Aplicación Web React 18 + Vite 6 + TypeScript
+└── frontend/              [Submódulo Git] React 18 + Vite 6 + TypeScript + Playwright
     ├── index.html         Estructura base HTML5 y fuentes Google
     ├── package.json
-    ├── vite.config.ts
+    ├── playwright.config.ts
+    ├── e2e/               Pruebas E2E de flujos críticos con Playwright
     └── src/
         ├── index.css      Sistema de diseño Glassmorphic & Dark Mode
         ├── App.tsx        Navegación principal y autenticación
@@ -78,21 +92,21 @@ banco-mvp/
 
 ## 🛠️ Comandos de Uso Frecuente
 
-### En la carpeta `api/`:
+### En la carpeta `backend/`:
 ```powershell
 npm run dev        # Iniciar servidor backend con hot-reload (puerto 3000)
 npm test           # Ejecutar los 33 tests de dominio
 npm run typecheck  # Validar tipos TypeScript
 ```
 
-### En la carpeta `web/`:
+### En la carpeta `frontend/`:
 ```powershell
 npm run dev           # Iniciar servidor web de desarrollo (puerto 5173)
 npm run typecheck     # Validar tipos TypeScript
 npm run test:e2e      # Ejecutar las pruebas E2E con Playwright (Headless)
 npm run test:e2e:ui   # Abrir la interfaz interactiva gráfica de Playwright
 npm run test:e2e:headed # Ejecutar las pruebas viendo el navegador en tiempo real
-npm run build         # Generar paquete de producción en web/dist
+npm run build         # Generar paquete de producción en frontend/dist
 ```
 
 ---
@@ -101,5 +115,5 @@ npm run build         # Generar paquete de producción en web/dist
 
 | Síntoma | Causa casi siempre | Solución |
 |---|---|---|
-| `Network request failed` en la web | El servidor `api` no está corriendo | Asegúrate de haber ejecutado `npm run dev` dentro de `api/` |
+| `Network request failed` en la web | El servidor `backend` no está corriendo | Asegúrate de haber ejecutado `npm run dev` dentro de `backend/` |
 | `listen EADDRINUSE :::3000` | El puerto 3000 ya está ocupado | Cierra el proceso anterior o finaliza Node en el Administrador de tareas |
