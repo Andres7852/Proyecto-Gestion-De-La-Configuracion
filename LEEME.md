@@ -87,9 +87,12 @@ npm run typecheck  # Validar tipos TypeScript
 
 ### En la carpeta `web/`:
 ```powershell
-npm run dev        # Iniciar servidor web de desarrollo (puerto 5173)
-npm run typecheck  # Validar tipos TypeScript
-npm run build      # Generar paquete de producción en web/dist
+npm run dev           # Iniciar servidor web de desarrollo (puerto 5173)
+npm run typecheck     # Validar tipos TypeScript
+npm run test:e2e      # Ejecutar las pruebas E2E con Playwright (Headless)
+npm run test:e2e:ui   # Abrir la interfaz interactiva gráfica de Playwright
+npm run test:e2e:headed # Ejecutar las pruebas viendo el navegador en tiempo real
+npm run build         # Generar paquete de producción en web/dist
 ```
 
 ---

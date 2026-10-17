@@ -31,6 +31,9 @@ export function App() {
   useEffect(() => {
     const sub = auth.onAuthStateChange((s) => {
       setSession(s);
+      if (!s) {
+        setAuthMode('login');
+      }
     });
 
     return () => sub.unsubscribe();
