@@ -117,3 +117,9 @@ npm run build         # Generar paquete de producción en frontend/dist
 |---|---|---|
 | `Network request failed` en la web | El servidor `backend` no está corriendo | Asegúrate de haber ejecutado `npm run dev` dentro de `backend/` |
 | `listen EADDRINUSE :::3000` | El puerto 3000 ya está ocupado | Cierra el proceso anterior o finaliza Node en el Administrador de tareas |
+
+---
+
+## 📋 Historias de Usuario y Responsables
+La documentación completa de las **10 Historias de Usuario (HU)** con sus respectivos responsables del equipo y criterios de aceptación en formato Gherkin se encuentra en el archivo:
+👉 **[HISTORIAS_DE_USUARIO.md](./HISTORIAS_DE_USUARIO.md)**.
