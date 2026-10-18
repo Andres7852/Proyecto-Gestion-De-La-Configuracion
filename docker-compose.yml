@@ -1,0 +1,64 @@
+services:
+
+  # ─── Base de Datos PostgreSQL 16 ──────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: banco_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: banco_mvp
+      POSTGRES_USER: banco_user
+      POSTGRES_PASSWORD: banco_password
+    ports:
+      - "5432:5432"
+    volumes:
+      # Montar los scripts SQL para que se ejecuten automáticamente al crear el contenedor
+      - ./db/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./db/02_functions.sql:/docker-entrypoint-initdb.d/02_functions.sql
+      - ./db/03_rls.sql:/docker-entrypoint-initdb.d/03_rls.sql
+      - ./db/04_seed.sql:/docker-entrypoint-initdb.d/04_seed.sql
+      - ./db/05_cajitas_retiros.sql:/docker-entrypoint-initdb.d/05_cajitas_retiros.sql
+      # Volumen persistente de datos
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U banco_user -d banco_mvp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ─── Backend API (Node.js + Express + TypeScript) ─────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: banco_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://banco_user:banco_password@db:5432/banco_mvp
+      PORT: 3000
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Montar los scripts SQL dentro del contenedor del backend (como fallback)
+      - ./db:/app/db:ro
+
+  # ─── Frontend Web (React 18 + Vite + NGINX) ───────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000
+    container_name: banco_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
