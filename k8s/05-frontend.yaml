@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banco-frontend
+  namespace: banco-mvp
+  labels:
+    app: banco-frontend
+    tier: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: banco-frontend
+  template:
+    metadata:
+      labels:
+        app: banco-frontend
+        tier: web
+    spec:
+      containers:
+        - name: frontend
+          # Esta imagen será construida y publicada en DockerHub por el Compañero 2
+          image: tu_usuario_dockerhub/banco-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "150m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banco-frontend-svc
+  namespace: banco-mvp
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30090
+      name: http
+  selector:
+    app: banco-frontend

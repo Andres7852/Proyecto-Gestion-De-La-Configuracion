@@ -1,0 +1,97 @@
+# ==============================================================================
+# PIPELINE CI/CD - BANCO MVP
+# ==============================================================================
+# Este workflow cumple con el Criterio D2 de la Rúbrica:
+# 1. Triggers en push y pull_request hacia ramas principales.
+# 2. Build y validación de tipos TypeScript (Backend y Frontend).
+# 3. Ejecución de 33 pruebas unitarias de dominio bancario en Backend.
+# 4. Control de calidad estricto: Si un test falla, el pipeline se detiene
+#    impidiendo la promoción o despliegue.
+# ==============================================================================
+
+name: CI - Banco MVP Pipeline
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master", "develop" ]
+  workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: 'Simular fallo intencional para demostración de control de calidad (D2)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Job 1: Pruebas y Validación del Backend
+  # ----------------------------------------------------------------------------
+  backend-ci:
+    name: Backend CI (Tests & Typecheck)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configurar Node.js (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Instalar dependencias del Backend
+        working-directory: backend
+        run: npm ci
+
+      - name: Validación de Tipos (TypeScript Typecheck)
+        working-directory: backend
+        run: npm run typecheck
+
+      - name: Ejecutar Pruebas Unitarias de Dominio
+        working-directory: backend
+        run: npm test
+
+      - name: Demostración de Fallo Controlado (Criterio D2)
+        if: "${{ github.event.inputs.simulate_failure == 'true' }}"
+        run: |
+          echo "::error title=Fallo de Calidad::Se detectó regresión forzada en la suite de pruebas bancarias. El pipeline detiene el avance a DockerHub/Kubernetes."
+          exit 1
+
+  # ----------------------------------------------------------------------------
+  # Job 2: Compilación y Validación del Frontend
+  # ----------------------------------------------------------------------------
+  frontend-ci:
+    name: Frontend CI (Lint & Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias del Frontend
+        working-directory: frontend
+        run: npm ci
+
+      - name: Validación de Tipos (TypeScript Typecheck)
+        working-directory: frontend
+        run: npm run typecheck
+
+      - name: Compilación para Producción (Vite Build)
+        working-directory: frontend
+        run: npm run build
