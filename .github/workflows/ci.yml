@@ -61,7 +61,7 @@ jobs:
         run: npm test
 
       - name: Demostración de Fallo Controlado (Criterio D2)
-        if: "${{ github.event.inputs.simulate_failure == 'true' }}"
+        if: inputs.simulate_failure == 'true'
         run: |
           echo "::error title=Fallo de Calidad::Se detectó regresión forzada en la suite de pruebas bancarias. El pipeline detiene el avance a DockerHub/Kubernetes."
           exit 1
