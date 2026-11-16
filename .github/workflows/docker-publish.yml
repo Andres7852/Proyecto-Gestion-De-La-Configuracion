@@ -9,6 +9,8 @@ name: CD - Build & Push DockerHub
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
   workflow_dispatch:

@@ -20,7 +20,7 @@ spec:
       containers:
         - name: frontend
           # Esta imagen será construida y publicada en DockerHub por el Compañero 2
-          image: tu_usuario_dockerhub/banco-frontend:latest
+          image: andres7887/banco-frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

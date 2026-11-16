@@ -54,7 +54,7 @@ Este documento contiene el guión detallado, la asignación de roles entre los 3
    * `backend/Dockerfile` (Node 20 Alpine, buenas prácticas, secretos fuera).
    * `frontend/Dockerfile` (Multi-stage build: etapa 1 Node build, etapa 2 Nginx Alpine).
 2. Abrir DockerHub en el navegador:
-   * Mostrar los repositorios `usuario/banco-backend` y `usuario/banco-frontend`.
+   * Mostrar los repositorios `andres7887/banco-backend` y `andres7887/banco-frontend`.
    * Enseñar los tags de versión: `latest`, `v1.0.0` y `sha-<commit>`.
    * **Trazabilidad (D6):** Mostrar que el tag `sha-xxxx` coincide exactamente con el último commit aprobado en GitHub.
 

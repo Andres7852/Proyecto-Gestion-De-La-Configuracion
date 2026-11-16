@@ -29,7 +29,7 @@ spec:
       containers:
         - name: backend
           # Esta imagen será construida y publicada en DockerHub por el Compañero 2
-          image: tu_usuario_dockerhub/banco-backend:latest
+          image: andres7887/banco-backend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
